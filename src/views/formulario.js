@@ -2,7 +2,9 @@ import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import { Grid, makeStyles, Button, Typography, SearchIcon } from '@material-ui/core';
+import { Grid, makeStyles, Button, Typography } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
+import DoneIcon from '@material-ui/icons/Done';
 
 
 function Formulario() {
@@ -31,7 +33,7 @@ function Formulario() {
                     <FormControl>
                         <InputLabel htmlFor="rut">Rut</InputLabel>
                         <Input id="rut" aria-describedby="my-helper-rut" />
-                        {/* <FormHelperText id="my-helper-rut">Si el rut termina en (K), reemplácelo por un cero (0)</FormHelperText> */}
+                        <FormHelperText id="my-helper-rut">Si el rut termina en (K), reemplácelo por un cero (0)</FormHelperText>
                     </FormControl>
 
                 </Grid>
@@ -41,7 +43,6 @@ function Formulario() {
                         <Input id="nombre" />
                     </FormControl>
                 </Grid>
-
 
                 <Grid item xs={6}>
                     <FormControl>
@@ -74,11 +75,14 @@ function Formulario() {
                 </Grid>
 
                 <Button variant="contained" color="primary">
-                <SearchIcon />   BUSCAR
+                    <SearchIcon />   BUSCAR
 
-</Button>
+                </Button>
 
-
+                <Button variant="contained" color="primary">
+                    <DoneIcon />
+                LISTO
+                </Button>
 
             </Grid>
 
