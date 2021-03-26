@@ -2,13 +2,17 @@ import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 
 function Formulario() {
 
 
     return (
         <>
-            <h1>Control de Acceso</h1>
+            <Typography variant="h3" gutterBottom>
+                Control de Acceso
+            </Typography>
 
             <FormControl>
                 <InputLabel htmlFor="rut">Rut</InputLabel>
@@ -19,33 +23,34 @@ function Formulario() {
             <FormControl>
                 <InputLabel htmlFor="nombre">Nombre</InputLabel>
                 <Input id="nombre" />
-
             </FormControl>
 
             <FormControl>
-                <InputLabel htmlFor="rut">Rut</InputLabel>
-                <Input id="rut" aria-describedby="my-helper-rut" />
-                <FormHelperText id="my-helper-rut">Si el rut termina en (K), reemplácelo por un cero (0)</FormHelperText>
+                <InputLabel htmlFor="vehiculo">Vehículo</InputLabel>
+                <Input id="vehiculo" />
             </FormControl>
 
             <FormControl>
-                <InputLabel htmlFor="rut">Rut</InputLabel>
-                <Input id="rut" aria-describedby="my-helper-rut" />
-                <FormHelperText id="my-helper-rut">Si el rut termina en (K), reemplácelo por un cero (0)</FormHelperText>
+                <InputLabel htmlFor="temperatura">Temperatura</InputLabel>
+                <Input id="temperatura" />
             </FormControl>
 
             <FormControl>
-                <InputLabel htmlFor="rut">Rut</InputLabel>
-                <Input id="rut" aria-describedby="my-helper-rut" />
-                <FormHelperText id="my-helper-rut">Si el rut termina en (K), reemplácelo por un cero (0)</FormHelperText>
+                <InputLabel htmlFor="patente">Patente</InputLabel>
+                <Input id="patente" />
             </FormControl>
 
             <FormControl>
-                <InputLabel htmlFor="rut">Rut</InputLabel>
-                <Input id="rut" aria-describedby="my-helper-rut" />
-                <FormHelperText id="my-helper-rut">Si el rut termina en (K), reemplácelo por un cero (0)</FormHelperText>
+                <InputLabel htmlFor="observaciones">Observaciones</InputLabel>
+                <Input
+                    id="observaciones"
+                    multiline
+                    rows={4} />
             </FormControl>
-            
+
+            <Button variant="contained" color="primary">
+                BUSCAR
+            </Button>
         </>
     )
 
