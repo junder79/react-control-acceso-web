@@ -4,6 +4,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import SearchIcon from '@material-ui/icons/Search';
 
 function Formulario() {
 
@@ -49,6 +50,7 @@ function Formulario() {
             </FormControl>
 
             <Button variant="contained" color="primary">
+                <SearchIcon />
                 BUSCAR
             </Button>
         </>
