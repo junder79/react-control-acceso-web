@@ -2,8 +2,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import { Grid, makeStyles, Button, Typography, SearchIcon } from '@material-ui/core';
-
+import { Grid, makeStyles, Button, Typography } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
 
 function Formulario() {
 
@@ -74,7 +74,7 @@ function Formulario() {
                 </Grid>
 
                 <Button variant="contained" color="primary">
-                <SearchIcon />   BUSCAR
+                    <SearchIcon />   BUSCAR
 
 </Button>
 
