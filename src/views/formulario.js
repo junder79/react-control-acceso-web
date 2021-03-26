@@ -77,7 +77,9 @@ function Formulario() {
                 <Button variant="contained" color="primary">
                     <SearchIcon />   BUSCAR
 
-                </Button>
+</Button>
+
+
 
                 <Button variant="contained" color="primary">
                     <DoneIcon />
