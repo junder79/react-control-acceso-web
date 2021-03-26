@@ -2,7 +2,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import { Grid, makeStyles , Button , Typography } from '@material-ui/core';
+import { Grid, makeStyles, Button, Typography, SearchIcon } from '@material-ui/core';
+
 
 function Formulario() {
 
@@ -22,7 +23,9 @@ function Formulario() {
     const classes = useStyles();
     return (
         <>
-            <h1>Control de Acceso</h1>
+            <Typography variant="h3" gutterBottom>
+                Control de Acceso
+            </Typography>
             <Grid container spacing={3} direction="row">
                 <Grid item xs={6} >
                     <FormControl>
@@ -35,7 +38,7 @@ function Formulario() {
                 <Grid item xs={6}>
                     <FormControl>
                         <InputLabel htmlFor="nombre">Nombre</InputLabel>
-                        <Input id="nombre"  />
+                        <Input id="nombre" />
                     </FormControl>
                 </Grid>
 
@@ -66,11 +69,19 @@ function Formulario() {
                             multiline
                             rows={4} />
                     </FormControl>
-                    <Button variant="contained" color="primary">
-                        BUSCAR
-            </Button>
+
+
                 </Grid>
+
+                <Button variant="contained" color="primary">
+                <SearchIcon />   BUSCAR
+
+</Button>
+
+
+
             </Grid>
+
 
         </>
     )
