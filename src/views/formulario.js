@@ -6,6 +6,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import { Grid, makeStyles, Button, Typography } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
+import DoneIcon from '@material-ui/icons/Done';
+
 
 function Formulario() {
 
@@ -24,18 +26,27 @@ function Formulario() {
 
     const classes = useStyles();
 
+    const [datosForm, setDatosForm] = useState({
+        run: '',
+        nombre: '',
+        vehiculo: '',
+        temperatura: '',
+        patente: '',
+        observacion: ''
+    })
 
     // Detectar los cambios realizados en los input 
 
     const valorInputs = (event) => {
-        setDatoForm({
+        setDatosForm({
             ...datosForm,
             [event.target.name]: event.target.value
         })
     }
 
     const agregarAcceso = (event) => {
-        event.preventDefault()
+        event.preventDefault();
+        console.log("DATOS" + JSON.stringify(datosForm));
     }
     return (
         <>
@@ -43,20 +54,20 @@ function Formulario() {
                 Control de Acceso
             </Typography>
             <Grid container spacing={3} direction="row">
-                <Form onSubmit={agregarAcceso}>
+                <form onSubmit={agregarAcceso}>
 
                     <Grid item xs={6} >
                         <FormControl>
-                            <InputLabel htmlFor="rut">Rut</InputLabel>
-                            <Input id="rut" aria-describedby="my-helper-rut" />
-                            {/* <FormHelperText id="my-helper-rut">Si el rut termina en (K), reemplácelo por un cero (0)</FormHelperText> */}
+                            <InputLabel htmlFor="run">RUN</InputLabel>
+                            <Input id="run" name="run" aria-describedby="my-helper-run" onChange={valorInputs} />
+                            <FormHelperText id="my-helper-run">Si el run termina en (K), reemplácelo por un cero (0)</FormHelperText>
                         </FormControl>
 
                     </Grid>
                     <Grid item xs={6}>
                         <FormControl>
                             <InputLabel htmlFor="nombre">Nombre</InputLabel>
-                            <Input id="nombre" onChange={valorInputs} />
+                            <Input id="nombre" name ="nombre"  onChange={valorInputs} />
                         </FormControl>
                     </Grid>
 
@@ -64,19 +75,19 @@ function Formulario() {
                     <Grid item xs={6}>
                         <FormControl>
                             <InputLabel htmlFor="vehiculo">Vehículo</InputLabel>
-                            <Input id="vehiculo" onChange={valorInputs} />
+                            <Input id="vehiculo" name="vehiculo" onChange={valorInputs} />
                         </FormControl>
                     </Grid>
                     <Grid item xs={6}>
                         <FormControl>
                             <InputLabel htmlFor="temperatura">Temperatura</InputLabel>
-                            <Input id="temperatura" onChange={valorInputs} />
+                            <Input id="temperatura" name="temperatura" onChange={valorInputs} />
                         </FormControl>
                     </Grid>
                     <Grid item xs={6}>
                         <FormControl>
                             <InputLabel htmlFor="patente">Patente</InputLabel>
-                            <Input id="patente" onChange={valorInputs} />
+                            <Input id="patente" name="patente" onChange={valorInputs} />
                         </FormControl>
                     </Grid>
                     <Grid item xs={6}>
@@ -85,19 +96,24 @@ function Formulario() {
                             <Input
                                 id="observaciones"
                                 multiline
-                                rows={4} onChange={valorInputs} />
+                                rows={4} onChange={valorInputs} name="observacion" />
                         </FormControl>
 
 
                     </Grid>
 
-                    <Button variant="contained" color="primary">
+                    <Button type="submit" variant="contained" color="primary">
                         <SearchIcon />   BUSCAR
 
 </Button>
 
 
-                </Form>
+                </form>
+
+                <Button variant="contained" color="primary">
+                    <DoneIcon />
+                LISTO
+                </Button>
 
             </Grid>
 
