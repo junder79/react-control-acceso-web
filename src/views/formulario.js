@@ -2,6 +2,8 @@
 import React, { useState, useCallback } from 'react';
 import FormControl from '@material-ui/core/FormControl';
 import { Grid, makeStyles, Button, Typography, Paper, TextField } from '@material-ui/core';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import SearchIcon from '@material-ui/icons/Search';
 import DoneIcon from '@material-ui/icons/Done';
 import axios from 'axios';
@@ -13,11 +15,34 @@ function Formulario() {
 
     const [nombre, guardarNombre] = useState('');
     const [nombreDisabled, setNombreDisabled] = useState(false);
-
     const [temperatura, guardarTemperatura] = useState('');
     const [vehiculo, guardarVehiculo] = useState('');
     const [patente, guardarPatente] = useState('');
+    const [observacion, guardarObservacion] = useState('');
 
+
+    const [open, setOpen] = useState(false);
+    const [openError, setOpenError] = useState(false);
+    const handleClickSuccess = () => {
+        setOpen(true);
+    };
+    const handleClickError = () => {
+        setOpenError(true);
+    };
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+        setOpenError(false);
+    };
+    const handleCloseError = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenError(false);
+    };
     const useStyles = makeStyles((theme) => ({
         root: {
             flexGrow: 1,
@@ -27,37 +52,18 @@ function Formulario() {
             textAlign: 'center',
             color: theme.palette.text.secondary,
         },
-        titulo:{
+        titulo: {
             marginTop: 8
         }
     }));
 
     const classes = useStyles();
 
-    const [datosForm, setDatosForm] = useState({
-        run: '',
-        nombre: '',
-        vehiculo: '',
-        temperatura: '',
-        patente: '',
-        observacion: ''
-    })
+
 
     const { validarRUT } = require('validar-rut');
 
-    // Detectar los cambios realizados en los input 
 
-    const valorInputs = (event) => {
-        setDatosForm({
-            ...datosForm,
-            [event.target.name]: event.target.value
-        })
-    }
-
-    const agregarAcceso = (event) => {
-        event.preventDefault();
-        console.log("DATOS" + JSON.stringify(datosForm));
-    }
 
     const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
@@ -73,11 +79,11 @@ function Formulario() {
         }
     }
 
-    const handleOnChange = useCallback(event => {
-        const { name, value } = event.target;
-        guardarRut({ ...rut, [name]: value });
-        escaneoRut({ ...rut, [name]: value });
-    });
+    // const handleOnChange = useCallback(event => {
+    //     const { name, value } = event.target;
+    //     guardarRut({ ...rut, [name]: value });
+    //     escaneoRut({ ...rut, [name]: value });
+    // });
 
     const buscarRut = () => {
         getUsuario(rut);
@@ -97,10 +103,11 @@ function Formulario() {
                     var nombre = response.data.nombre;
                     var vehiculo = response.data.vehiculo;
                     var patente = response.data.patente;
-                    guardarNombre(nombre);
+
+
                     guardarVehiculo(vehiculo);
                     guardarPatente(patente);
-
+                    guardarNombre(nombre);
                     if (nombre != '') setNombreDisabled(true);
                 })
                 .catch(e => {
@@ -109,11 +116,44 @@ function Formulario() {
                     // guardarAlerta({ mostrar: true, titulo: "Error de Conexión" });
                     // setCargado(false);
                 })
+
         } else {
             // guardarAlerta({ mostrar: true, titulo: "Rut Inválido" });
         }
     }
 
+    const enviarFomrulario = () => {
+        // console.log(nombre + rut + observacion + patente + vehiculo + temperatura);
+        let data = new FormData();
+        data.append('run', rut);
+        data.append('nombre', nombre);
+        data.append('temperatura', temperatura);
+        data.append('obra', 1);
+        data.append('vehiculo', vehiculo);
+        data.append('patente', patente);
+        data.append('patente', patente);
+        data.append('observaciones', observacion);
+        axios.post('https://grupohexxa.cl/controlacceso/APP/registroAcceso.php', data)
+            .then(function (response) {
+
+
+                // route.params.getControlAcceso(obraSelected, fechaRuta);
+                // navigation.navigate("Historial");
+                // route.params.mostrarSnackbar();
+                // setEstadoBoton(false);
+                console.log(response);
+                handleClickSuccess();
+            })
+            .catch(function (error) {
+                console.log(error);
+                handleClickError();
+                // setEstadoBoton(false);
+                // guardarAlerta({ mostrar: true, titulo: "Error de Conexión" });
+            });
+    }
+    function Alert(props) {
+        return <MuiAlert elevation={6} variant="filled" {...props} />;
+    }
     return (
         <>
             <Typography variant="h3" gutterBottom className={classes.titulo}>
@@ -128,14 +168,19 @@ function Formulario() {
                         <FormControl fullWidth>
 
                             <TextField
-                                id="outlined-helperText"
+
                                 label="RUN"
                                 defaultValue=""
                                 name="run"
                                 helperText="Si el run termina en (K), reemplácelo por un cero (0)"
                                 variant="outlined"
                                 value={rut}
-                                onChange={handleOnChange}
+                                onChange={
+                                    event => {
+                                        let run = event.target.value
+                                        guardarRut(run)
+                                    }
+                                }
                                 autoFocus={true}
                                 disabled={rutDisabled}
                             />
@@ -148,13 +193,19 @@ function Formulario() {
 
                                 <FormControl fullWidth >
                                     <TextField
-                                        id="outlined-helperText"
+                                        type="text"
                                         label="Nombre"
                                         value={nombre}
+                                        disabled={rutDisabled}
                                         name="nombre"
                                         variant="outlined"
-                                        onChange={valorInputs}
-                                        disabled={nombreDisabled}
+                                        onChange={
+                                            event => {
+                                                let nombre = event.target.value
+                                                guardarNombre(nombre)
+                                            }
+                                        }
+
                                     />
                                 </FormControl>
 
@@ -163,12 +214,17 @@ function Formulario() {
 
                                 <FormControl fullWidth>
                                     <TextField
-                                        id="outlined-helperText"
+
                                         label="Vehículo"
                                         value={vehiculo}
                                         name="vehiculo"
                                         variant="outlined"
-                                        onChange={valorInputs}
+                                        onChange={
+                                            event => {
+                                                let vehiculo = event.target.value
+                                                guardarVehiculo(vehiculo)
+                                            }
+                                        }
                                     />
                                 </FormControl>
                             </Grid>
@@ -176,12 +232,17 @@ function Formulario() {
 
                                 <FormControl fullWidth >
                                     <TextField
-                                        id="outlined-helperText"
+
                                         label="Temperatura"
                                         defaultValue=""
                                         name="temperatura"
                                         variant="outlined"
-                                        onChange={valorInputs}
+                                        onChange={
+                                            event => {
+                                                let temperatura = event.target.value
+                                                guardarTemperatura(temperatura)
+                                            }
+                                        }
                                     />
                                 </FormControl>
 
@@ -190,12 +251,17 @@ function Formulario() {
 
                                 <FormControl fullWidth >
                                     <TextField
-                                        id="outlined-helperText"
+
                                         label="Patente"
                                         value={patente}
                                         name="patente"
                                         variant="outlined"
-                                        onChange={valorInputs}
+                                        onChange={
+                                            event => {
+                                                let patente = event.target.value
+                                                guardarPatente(patente)
+                                            }
+                                        }
                                     />
                                 </FormControl>
 
@@ -204,12 +270,17 @@ function Formulario() {
 
                                 <FormControl fullWidth >
                                     <TextField
-                                        id="outlined-helperText"
+
                                         label="Observacion"
                                         defaultValue=""
                                         name="observacion"
                                         variant="outlined"
-                                        onChange={valorInputs}
+                                        onChange={
+                                            event => {
+                                                let observacion = event.target.value
+                                                guardarObservacion(observacion)
+                                            }
+                                        }
                                     />
                                 </FormControl>
 
@@ -217,13 +288,24 @@ function Formulario() {
                             <Grid item xs={12}>
                                 <Paper className={classes.paper}>
                                     <FormControl fullWidth >
-                                        <Button type="submit" variant="contained" color="primary">
+                                        <Button type="submit" variant="contained" color="primary" onClick={() => enviarFomrulario()}>
                                             <DoneIcon />
                                             LISTO
                                         </Button>
                                     </FormControl>
                                 </Paper>
                             </Grid>
+
+                            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                                <Alert onClose={handleClose} severity="success">
+                                    Agregado
+                              </Alert>
+                            </Snackbar>
+                            <Snackbar open={openError} autoHideDuration={6000} onClose={handleCloseError}>
+                                <Alert onClose={handleCloseError} severity="error">
+                                    Error al agregar
+        </Alert>
+                            </Snackbar>
                         </>
                         : <Grid item xs={6}>
 
