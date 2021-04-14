@@ -1,51 +1,96 @@
-import logo from './logo.svg';
-import './App.css';
-import Formulario from './views/formulario';
-import Container from '@material-ui/core/Container';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import { Grid, makeStyles, Button, Typography, Paper, TextField } from '@material-ui/core';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
 
+import Formulario from './views/formulario';
+import Historial from './views/historial';
 
-function App() {
-
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      flexGrow: 1,
-    },
-    paper: {
-      padding: theme.spacing(2),
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-    },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-  }));
-
-  const classes = useStyles();
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
 
   return (
-    <>
-      <AppBar position="static">
-        <Toolbar variant="dense">
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" color="inherit">
-            Menú
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Container>
-
-        <Formulario />
-
-      </Container>
-    </>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`scrollable-auto-tabpanel-${index}`}
+      aria-labelledby={`scrollable-auto-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
   );
 }
 
-export default App;
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `scrollable-auto-tab-${index}`,
+    'aria-controls': `scrollable-auto-tabpanel-${index}`,
+  };
+}
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    width: '100%',
+    backgroundColor: theme.palette.background.paper,
+  },
+}));
+
+export default function App() {
+  const classes = useStyles();
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  return (
+    <div className={classes.root}>
+      <AppBar position="static" color="default">
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          indicatorColor="primary"
+          textColor="primary"
+          variant="scrollable"
+          scrollButtons="auto"
+          aria-label="scrollable auto tabs example"
+        >
+          <Tab label="HISTORIAL" {...a11yProps(0)} />
+          <Tab label="CONTROL ACCESO" {...a11yProps(1)} />
+          <Tab label="CERRAR SESIÓN" {...a11yProps(2)} />
+
+        </Tabs>
+      </AppBar>
+      <Container>
+        <TabPanel value={value} index={0}>
+          <Formulario />
+        </TabPanel>
+
+        <TabPanel value={value} index={1}>
+          <Historial />
+        </TabPanel>
+
+        <TabPanel value={value} index={2}>
+          Cerrar Sesión
+      </TabPanel>
+      </Container>
+    </div>
+  );
+}
