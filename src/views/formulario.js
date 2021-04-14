@@ -4,11 +4,19 @@ import FormControl from '@material-ui/core/FormControl';
 import { Grid, makeStyles, Button, Typography, Paper, TextField } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import DoneIcon from '@material-ui/icons/Done';
-
+import axios from 'axios';
 
 function Formulario() {
 
     const [rut, guardarRut] = useState('');
+    const [rutDisabled, setRutDisabled] = useState(false);
+
+    const [nombre, guardarNombre] = useState('');
+    const [nombreDisabled, setNombreDisabled] = useState(false);
+
+    const [temperatura, guardarTemperatura] = useState('');
+    const [vehiculo, guardarVehiculo] = useState('');
+    const [patente, guardarPatente] = useState('');
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -19,6 +27,9 @@ function Formulario() {
             textAlign: 'center',
             color: theme.palette.text.secondary,
         },
+        titulo:{
+            marginTop: 8
+        }
     }));
 
     const classes = useStyles();
@@ -31,6 +42,8 @@ function Formulario() {
         patente: '',
         observacion: ''
     })
+
+    const { validarRUT } = require('validar-rut');
 
     // Detectar los cambios realizados en los input 
 
@@ -50,32 +63,66 @@ function Formulario() {
 
     const escaneoRut = (rutString) => {
         const rutInput = rutString.run;
-        if(rutInput.length > 20){
+        if (rutInput.length > 20) {
             const string = rutInput.split('=', 2)[1];
             const rut = string.split('&', 1)[0];
             guardarRut(rut);
-            //getUsuario(rut);
-        }else{
+            getUsuario(rut);
+        } else {
             guardarRut(rutInput);
         }
-        console.log(rut)
     }
 
     const handleOnChange = useCallback(event => {
         const { name, value } = event.target;
         guardarRut({ ...rut, [name]: value });
         escaneoRut({ ...rut, [name]: value });
-      });
+    });
+
+    const buscarRut = () => {
+        getUsuario(rut);
+    }
+
+    const getUsuario = (rut) => {
+        console.log(rut)
+        if (rut != '' && rut != 0 && validarRUT(rut)) {
+            //setCargado(true);
+
+            axios.get('https://grupohexxa.cl/controlacceso/APP/encontrarUsuario.php?run=' + rut)
+                .then(response => {
+                    console.log("RESPUESTA SERVER  " + JSON.stringify(response.data));
+                    setMostrarFormulario(true);
+                    setRutDisabled(true);
+                    // setCargado(false);
+                    var nombre = response.data.nombre;
+                    var vehiculo = response.data.vehiculo;
+                    var patente = response.data.patente;
+                    guardarNombre(nombre);
+                    guardarVehiculo(vehiculo);
+                    guardarPatente(patente);
+
+                    if (nombre != '') setNombreDisabled(true);
+                })
+                .catch(e => {
+                    // Podemos mostrar los errores en la consola
+                    console.log(e);
+                    // guardarAlerta({ mostrar: true, titulo: "Error de Conexión" });
+                    // setCargado(false);
+                })
+        } else {
+            // guardarAlerta({ mostrar: true, titulo: "Rut Inválido" });
+        }
+    }
 
     return (
         <>
-            <Typography variant="h3" gutterBottom>
+            <Typography variant="h3" gutterBottom className={classes.titulo}>
                 Control de Acceso
             </Typography>
 
             <div className={classes.root}>
                 <Grid container spacing={3}>
-                    {/* <form onSubmit={agregarAcceso}> */}
+
                     <Grid item xs={6}>
 
                         <FormControl fullWidth>
@@ -90,6 +137,7 @@ function Formulario() {
                                 value={rut}
                                 onChange={handleOnChange}
                                 autoFocus={true}
+                                disabled={rutDisabled}
                             />
                         </FormControl>
 
@@ -102,10 +150,11 @@ function Formulario() {
                                     <TextField
                                         id="outlined-helperText"
                                         label="Nombre"
-                                        defaultValue=""
+                                        value={nombre}
                                         name="nombre"
                                         variant="outlined"
                                         onChange={valorInputs}
+                                        disabled={nombreDisabled}
                                     />
                                 </FormControl>
 
@@ -115,8 +164,8 @@ function Formulario() {
                                 <FormControl fullWidth>
                                     <TextField
                                         id="outlined-helperText"
-                                        label="Vehìculo"
-                                        defaultValue=""
+                                        label="Vehículo"
+                                        value={vehiculo}
                                         name="vehiculo"
                                         variant="outlined"
                                         onChange={valorInputs}
@@ -143,7 +192,7 @@ function Formulario() {
                                     <TextField
                                         id="outlined-helperText"
                                         label="Patente"
-                                        defaultValue=""
+                                        value={patente}
                                         name="patente"
                                         variant="outlined"
                                         onChange={valorInputs}
@@ -177,19 +226,20 @@ function Formulario() {
                             </Grid>
                         </>
                         : <Grid item xs={6}>
-                     
+
                             <FormControl fullWidth >
-                                <Button type="submit" variant="contained" color="primary">
+                                <Button type="submit" variant="contained" color="primary" onClick={() => buscarRut()}>
                                     <SearchIcon />
                                     BUSCAR
                                 </Button>
                             </FormControl>
-                   
-                    </Grid> }
+
+                        </Grid>}
 
                 </Grid>
 
             </div>
+
         </>
     )
 
