@@ -80,11 +80,11 @@ export default function App() {
       </AppBar>
       <Container>
         <TabPanel value={value} index={0}>
-          <Formulario />
+          <Historial />
         </TabPanel>
 
         <TabPanel value={value} index={1}>
-          <Historial />
+          <Formulario />
         </TabPanel>
 
         <TabPanel value={value} index={2}>
