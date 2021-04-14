@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -7,7 +7,8 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
-
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import Formulario from './views/formulario';
 import Historial from './views/historial';
 
@@ -31,6 +32,7 @@ function TabPanel(props) {
   );
 }
 
+
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
@@ -53,6 +55,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function App() {
+
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+  const [open, setOpen] = useState(false);
+  const handleClickSuccess = () => {
+    setOpen(true);
+  };
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+
+  };
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -80,17 +98,23 @@ export default function App() {
       </AppBar>
       <Container>
         <TabPanel value={value} index={0}>
-          <Historial />
+          <Historial setValue={setValue} />
         </TabPanel>
 
         <TabPanel value={value} index={1}>
-          <Formulario />
+          <Formulario setValue={setValue} setOpen={setOpen} open={open} handleClickSuccess={handleClickSuccess} />
         </TabPanel>
 
         <TabPanel value={value} index={2}>
           Cerrar Sesión
       </TabPanel>
       </Container>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success">
+          Agregado
+                              </Alert>
+      </Snackbar>
     </div>
+
   );
 }

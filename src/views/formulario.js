@@ -7,7 +7,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import DoneIcon from '@material-ui/icons/Done';
 import axios from 'axios';
 
-function Formulario() {
+function Formulario({ setValue , open , setOpen ,handleClickSuccess}) {
 
     const [rut, guardarRut] = useState('');
     const [rutDisabled, setRutDisabled] = useState(false);
@@ -22,13 +22,10 @@ function Formulario() {
     const [mensaje, setMensaje] = useState('');
 
 
-    const [open, setOpen] = useState(false);
+  
     const [openError, setOpenError] = useState(false);
 
-    const handleClickSuccess = () => {
-        setOpen(true);
-    };
-
+ 
     const handleClickError = () => {
         setOpenError(true);
     };
@@ -79,6 +76,7 @@ function Formulario() {
             const rut = string.split('&', 1)[0];
             guardarRut(rut);
             getUsuario(rut);
+
         } else {
             guardarRut(rutString);
         }
@@ -147,6 +145,7 @@ function Formulario() {
                 // setEstadoBoton(false);
                 console.log(response);
                 handleClickSuccess();
+                setValue(0);
             })
             .catch(function (error) {
                 console.log(error);
@@ -318,11 +317,7 @@ function Formulario() {
 
             </div>
 
-            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="success">
-                    Agregado
-                              </Alert>
-            </Snackbar>
+           
             <Snackbar open={openError} autoHideDuration={6000} onClose={handleCloseError}>
                 <Alert onClose={handleCloseError} severity="error">
                     {mensaje}
