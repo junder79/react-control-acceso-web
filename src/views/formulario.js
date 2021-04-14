@@ -20,15 +20,20 @@ function Formulario() {
     const [patente, guardarPatente] = useState('');
     const [observacion, guardarObservacion] = useState('');
 
+    const [mensaje, setMensaje] = useState('');
+
 
     const [open, setOpen] = useState(false);
     const [openError, setOpenError] = useState(false);
+
     const handleClickSuccess = () => {
         setOpen(true);
     };
+
     const handleClickError = () => {
         setOpenError(true);
     };
+
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -37,12 +42,14 @@ function Formulario() {
         setOpen(false);
         setOpenError(false);
     };
+
     const handleCloseError = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
         setOpenError(false);
     };
+
     const useStyles = makeStyles((theme) => ({
         root: {
             flexGrow: 1,
@@ -68,14 +75,13 @@ function Formulario() {
     const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
     const escaneoRut = (rutString) => {
-        const rutInput = rutString.run;
-        if (rutInput.length > 20) {
-            const string = rutInput.split('=', 2)[1];
+        if (rutString.length > 20) {
+            const string = rutString.split('=', 2)[1];
             const rut = string.split('&', 1)[0];
             guardarRut(rut);
             getUsuario(rut);
         } else {
-            guardarRut(rutInput);
+            guardarRut(rutString);
         }
     }
 
@@ -92,7 +98,6 @@ function Formulario() {
     const getUsuario = (rut) => {
         console.log(rut)
         if (rut != '' && rut != 0 && validarRUT(rut)) {
-            //setCargado(true);
 
             axios.get('https://grupohexxa.cl/controlacceso/APP/encontrarUsuario.php?run=' + rut)
                 .then(response => {
@@ -110,19 +115,19 @@ function Formulario() {
                     guardarNombre(nombre);
                     if (nombre != '') setNombreDisabled(true);
                 })
-                .catch(e => {
-                    // Podemos mostrar los errores en la consola
-                    console.log(e);
-                    // guardarAlerta({ mostrar: true, titulo: "Error de Conexión" });
-                    // setCargado(false);
-                })
+                .catch(function (error) {
+                    console.log(error);
+                    setMensaje('Error de conexión');
+                    handleClickError();
+                });
 
         } else {
-            // guardarAlerta({ mostrar: true, titulo: "Rut Inválido" });
+            setMensaje('Rut inválido');
+            handleClickError();
         }
     }
 
-    const enviarFomrulario = () => {
+    const enviarFormulario = () => {
         // console.log(nombre + rut + observacion + patente + vehiculo + temperatura);
         let data = new FormData();
         data.append('run', rut);
@@ -146,6 +151,7 @@ function Formulario() {
             })
             .catch(function (error) {
                 console.log(error);
+                setMensaje('Error de conexión');
                 handleClickError();
                 // setEstadoBoton(false);
                 // guardarAlerta({ mostrar: true, titulo: "Error de Conexión" });
@@ -178,7 +184,7 @@ function Formulario() {
                                 onChange={
                                     event => {
                                         let run = event.target.value
-                                        guardarRut(run)
+                                        escaneoRut(run)
                                     }
                                 }
                                 autoFocus={true}
@@ -288,7 +294,7 @@ function Formulario() {
                             <Grid item xs={12}>
                                 <Paper className={classes.paper}>
                                     <FormControl fullWidth >
-                                        <Button type="submit" variant="contained" color="primary" onClick={() => enviarFomrulario()}>
+                                        <Button type="submit" variant="contained" color="primary" onClick={() => enviarFormulario()}>
                                             <DoneIcon />
                                             LISTO
                                         </Button>
@@ -296,16 +302,7 @@ function Formulario() {
                                 </Paper>
                             </Grid>
 
-                            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                                <Alert onClose={handleClose} severity="success">
-                                    Agregado
-                              </Alert>
-                            </Snackbar>
-                            <Snackbar open={openError} autoHideDuration={6000} onClose={handleCloseError}>
-                                <Alert onClose={handleCloseError} severity="error">
-                                    Error al agregar
-        </Alert>
-                            </Snackbar>
+
                         </>
                         : <Grid item xs={6}>
 
@@ -321,6 +318,17 @@ function Formulario() {
                 </Grid>
 
             </div>
+
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success">
+                    Agregado
+                              </Alert>
+            </Snackbar>
+            <Snackbar open={openError} autoHideDuration={6000} onClose={handleCloseError}>
+                <Alert onClose={handleCloseError} severity="error">
+                    {mensaje}
+                </Alert>
+            </Snackbar>
 
         </>
     )
