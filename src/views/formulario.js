@@ -7,7 +7,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import DoneIcon from '@material-ui/icons/Done';
 import axios from 'axios';
 
-function Formulario({ setValue , open , setOpen ,handleClickSuccess}) {
+function Formulario({ setValue, open, setOpen, handleClickSuccess }) {
 
     const [rut, guardarRut] = useState('');
     const [rutDisabled, setRutDisabled] = useState(false);
@@ -22,10 +22,10 @@ function Formulario({ setValue , open , setOpen ,handleClickSuccess}) {
     const [mensaje, setMensaje] = useState('');
 
 
-  
+
     const [openError, setOpenError] = useState(false);
 
- 
+
     const handleClickError = () => {
         setOpenError(true);
     };
@@ -158,6 +158,13 @@ function Formulario({ setValue , open , setOpen ,handleClickSuccess}) {
     function Alert(props) {
         return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
+
+    function handleKeyDown(e) {
+        if (e.key === 'Enter') {
+            buscarRut();
+        }
+    }
+
     return (
         <>
             <Typography variant="h3" gutterBottom className={classes.titulo}>
@@ -187,6 +194,7 @@ function Formulario({ setValue , open , setOpen ,handleClickSuccess}) {
                                 }
                                 autoFocus={true}
                                 disabled={rutDisabled}
+                                onKeyDown={handleKeyDown}
                             />
                         </FormControl>
 
@@ -317,7 +325,7 @@ function Formulario({ setValue , open , setOpen ,handleClickSuccess}) {
 
             </div>
 
-           
+
             <Snackbar open={openError} autoHideDuration={6000} onClose={handleCloseError}>
                 <Alert onClose={handleCloseError} severity="error">
                     {mensaje}
