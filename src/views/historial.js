@@ -20,11 +20,23 @@ import 'date-fns';
 function Historial({ value, setValue }) {
 
     useEffect(() => {
+        getHistorial(1, selectedDate);
+        console.log(datos);
+    }, []);
 
-    });
-
-    const getHistorial = () => {
-
+    const getHistorial = (obra, fecha) => {
+        console.log(fecha);
+        axios.get('https://grupohexxa.cl/controlacceso/APP/getControlAcceso.php?fecha=' + fecha + '&obra=' + obra)
+            .then(function (response) {
+                setDatos(response.data);
+                // setEstadoCargado(false);
+                // setCantidadFilas(response.data.length);
+            })
+            .catch(function (error) {
+                console.log(error);
+                // guardarAlerta({ mostrar: true, titulo: "Error de Conexión" });
+                // setEstadoCargado(false);
+            })
     }
 
     const useStyles = makeStyles((theme) => ({
@@ -52,27 +64,39 @@ function Historial({ value, setValue }) {
         },
     }));
 
-    function createData(name, calories, fat, carbs, protein) {
-        return { name, calories, fat, carbs, protein };
-    }
+    const formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
 
-    const rows = [
-        createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-        createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-        createData('Eclair', 262, 16.0, 24, 6.0),
-        createData('Cupcake', 305, 3.7, 67, 4.3),
-        createData('Gingerbread', 356, 16.0, 49, 3.9),
-    ];
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        const fechaFormato = [year, month, day].join('-');
+
+        return fechaFormato;
+    }
 
     const classes = useStyles();
     const [obra, setObra] = useState('');
-    const [selectedDate, setSelectedDate] = React.useState(new Date());
+    const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+    const [datos, setDatos] = useState([]);
+
     const cambioChangeObra = (event) => {
         setObra(event.target.value);
     };
+
     const handleDateChange = (date) => {
-        setSelectedDate(date);
+
+        const fechaFormato = formatDate(date);
+        setSelectedDate(formatDate(fechaFormato));
+
+        getHistorial(1, fechaFormato);
     };
+
+
 
     return (
         <>
@@ -119,11 +143,12 @@ function Historial({ value, setValue }) {
                     </MuiPickersUtilsProvider>
                 </Grid>
                 <Grid item xs={1}>
-                <Fab color="primary" aria-label="add" value={value} onClick={() => setValue(1)}>
-                <AddIcon />
-            </Fab>
+                    <Fab color="primary" aria-label="add" value={value} onClick={() => setValue(1)}>
+                        <AddIcon />
+                    </Fab>
                 </Grid>
             </Grid>
+
             <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
@@ -138,23 +163,23 @@ function Historial({ value, setValue }) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
-                            <TableRow key={row.name}>
+                        {datos.map((item) => (
+                            <TableRow>
                                 <TableCell component="th" scope="row">
-                                    {row.name}
+                                    {item['nombre_usuario']}
                                 </TableCell>
-                                <TableCell align="center">{row.calories}</TableCell>
-                                <TableCell align="center">{row.fat}</TableCell>
-                                <TableCell align="center">{row.carbs}</TableCell>
-                                <TableCell align="center">{row.protein}</TableCell>
-                                <TableCell align="center">{row.carbs}</TableCell>
-                                <TableCell align="center">{row.protein}</TableCell>
+                                <TableCell align="center">{item['run']}</TableCell>
+                                <TableCell align="center">{item['temperatura'] + " °C"}</TableCell>
+                                <TableCell align="center">{item['hora']}</TableCell>
+                                <TableCell align="center">{item['vehiculo']}</TableCell>
+                                <TableCell align="center">{item['patente']}</TableCell>
+                                <TableCell align="center">{item['observacion']}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-            
+
         </>
     )
 }
