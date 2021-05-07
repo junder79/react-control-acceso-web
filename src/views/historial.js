@@ -20,7 +20,11 @@ import 'date-fns';
 function Historial({ value, setValue }) {
 
     useEffect(() => {
-        getHistorial(1, selectedDate);
+
+        const fechaFormato = formatDate(selectedDate);
+
+        getHistorial(1, fechaFormato);
+
         console.log(datos);
     }, []);
 
@@ -81,7 +85,7 @@ function Historial({ value, setValue }) {
 
     const classes = useStyles();
     const [obra, setObra] = useState('');
-    const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [datos, setDatos] = useState([]);
 
     const cambioChangeObra = (event) => {
@@ -90,8 +94,8 @@ function Historial({ value, setValue }) {
 
     const handleDateChange = (date) => {
 
+        setSelectedDate(date);
         const fechaFormato = formatDate(date);
-        setSelectedDate(formatDate(fechaFormato));
 
         getHistorial(1, fechaFormato);
     };
@@ -131,7 +135,7 @@ function Historial({ value, setValue }) {
                                 margin="normal"
                                 id="date-picker-dialog"
                                 label="Fecha"
-                                format="MM/dd/yyyy"
+                                format="dd/MM/yyyy"
                                 value={selectedDate}
                                 onChange={handleDateChange}
                                 KeyboardButtonProps={{
