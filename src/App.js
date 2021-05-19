@@ -11,6 +11,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Formulario from './views/formulario';
 import Historial from './views/historial';
+import Login from './views/login';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -92,7 +93,7 @@ export default function App() {
         >
           <Tab label="HISTORIAL" {...a11yProps(0)} />
           <Tab label="CONTROL ACCESO" {...a11yProps(1)} />
-          <Tab label="CERRAR SESIÓN" {...a11yProps(2)} />
+          <Tab label="INICIAR SESIÓN" {...a11yProps(2)} />
 
         </Tabs>
       </AppBar>
@@ -106,7 +107,7 @@ export default function App() {
         </TabPanel>
 
         <TabPanel value={value} index={2}>
-          Cerrar Sesión
+         <Login></Login>
       </TabPanel>
       </Container>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>

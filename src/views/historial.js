@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Grid, makeStyles, Button, Typography, Paper, TextField, Fab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, InputLabel, MenuItem, FormHelperText, FormControl, Select } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import Skeleton from '@material-ui/lab/Skeleton';
 import axios from 'axios';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PersonIcon from '@material-ui/icons/Person';
@@ -30,14 +31,17 @@ function Historial({ value, setValue }) {
 
     const getHistorial = (obra, fecha) => {
         console.log(fecha);
+        setEstadoCarga(true);
         axios.get('https://grupohexxa.cl/controlacceso/APP/getControlAcceso.php?fecha=' + fecha + '&obra=' + obra)
             .then(function (response) {
                 setDatos(response.data);
+                setEstadoCarga(false);
                 // setEstadoCargado(false);
                 // setCantidadFilas(response.data.length);
             })
             .catch(function (error) {
                 console.log(error);
+                setEstadoCarga(false);
                 // guardarAlerta({ mostrar: true, titulo: "Error de Conexión" });
                 // setEstadoCargado(false);
             })
@@ -46,6 +50,10 @@ function Historial({ value, setValue }) {
     const useStyles = makeStyles((theme) => ({
         root: {
             flexGrow: 1,
+
+        },
+        rootEsqueleto: {
+            width: '100%',
         },
         paper: {
             padding: theme.spacing(2),
@@ -87,7 +95,7 @@ function Historial({ value, setValue }) {
     const [obra, setObra] = useState('');
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [datos, setDatos] = useState([]);
-
+    const [estadoCarga, setEstadoCarga] = useState(false);
     const cambioChangeObra = (event) => {
         setObra(event.target.value);
     };
@@ -152,37 +160,47 @@ function Historial({ value, setValue }) {
                     </Fab>
                 </Grid>
             </Grid>
+            {
+                estadoCarga ?
+                    <div className={classes.rootEsqueleto}>
+                        <Skeleton />
+                        <Skeleton animation={false} />
+                        <Skeleton animation="wave" />
+                    </div> : <TableContainer component={Paper}>
+                        <Table className={classes.table} aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="center"><AccountCircleIcon /></TableCell>
+                                    <TableCell align="center"><PersonIcon /></TableCell>
+                                    <TableCell align="center"><AcUnitIcon /></TableCell>
+                                    <TableCell align="center"><QueryBuilderIcon /></TableCell>
+                                    <TableCell align="center"><DriveEtaIcon /></TableCell>
+                                    <TableCell align="center"><FeaturedPlayListIcon /></TableCell>
+                                    <TableCell align="center"><AssignmentLateIcon /></TableCell>
+                                </TableRow>
+                            </TableHead>
 
-            <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="center"><AccountCircleIcon /></TableCell>
-                            <TableCell align="center"><PersonIcon /></TableCell>
-                            <TableCell align="center"><AcUnitIcon /></TableCell>
-                            <TableCell align="center"><QueryBuilderIcon /></TableCell>
-                            <TableCell align="center"><DriveEtaIcon /></TableCell>
-                            <TableCell align="center"><FeaturedPlayListIcon /></TableCell>
-                            <TableCell align="center"><AssignmentLateIcon /></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {datos.map((item) => (
-                            <TableRow>
-                                <TableCell component="th" scope="row">
-                                    {item['nombre_usuario']}
-                                </TableCell>
-                                <TableCell align="center">{item['run']}</TableCell>
-                                <TableCell align="center">{item['temperatura'] + " °C"}</TableCell>
-                                <TableCell align="center">{item['hora']}</TableCell>
-                                <TableCell align="center">{item['vehiculo']}</TableCell>
-                                <TableCell align="center">{item['patente']}</TableCell>
-                                <TableCell align="center">{item['observacion']}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                            <TableBody>
+                                {datos.map((item) => (
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">
+                                            {item['nombre_usuario']}
+                                        </TableCell>
+                                        <TableCell align="center">{item['run']}</TableCell>
+                                        <TableCell align="center">{item['temperatura'] + " °C"}</TableCell>
+                                        <TableCell align="center">{item['hora']}</TableCell>
+                                        <TableCell align="center">{item['vehiculo']}</TableCell>
+                                        <TableCell align="center">{item['patente']}</TableCell>
+                                        <TableCell align="center">{item['observacion']}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+
+
+                        </Table>
+                    </TableContainer>
+            }
+
 
         </>
     )
